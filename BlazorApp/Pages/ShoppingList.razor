@@ -1,12 +1,13 @@
 ﻿@page "/ShoppingList"
 @using BlazorApp.Data
 
-<h3>ShoppingList</h3>
+<PageTitle>@title</PageTitle>
+<h3>Shopping List</h3>
 
-<input placeholder="Grocery Name" @bind="@groceryName" />
-<input placeholder="Grocery Price" @bind="groceryPrice" />
-<button onclick="@AddGrocery">Add Grocery</button>
-
+<input class="form-control mb-2" placeholder="Grocery Name" @bind="@groceryName" />
+<input class="form-control mb-2" placeholder="Grocery Price" @bind="groceryPrice" />
+<button class="btn btn-outline-primary mb-2" onclick="@AddGrocery">Add Grocery</button>
+<hr />
 <ul>
     @foreach (var grocery in Groceries)
     {
@@ -16,8 +17,9 @@
 <h1>Total (@Groceries.Sum(c=>c.Price))</h1>
 
 @code {
-    private string groceryName;
-    private float groceryPrice;
+    private string title = "Our Groceries";
+    private string groceryName = string.Empty;
+    private float groceryPrice = 0;
 
     private List<Grocery> Groceries = new List<Grocery>();
     public void AddGrocery()
