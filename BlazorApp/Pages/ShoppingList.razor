@@ -1,13 +1,29 @@
 ﻿@page "/ShoppingList"
+@*@layout ShoppingListLayout*@
 @using BlazorApp.Data
 
 <PageTitle>@title</PageTitle>
 <h3>Shopping List</h3>
 
-<input class="form-control mb-2" placeholder="Grocery Name" @bind="@groceryName" />
-<input class="form-control mb-2" placeholder="Grocery Price" @bind="groceryPrice" />
-<button class="btn btn-outline-primary mb-2" @onclick="AddGrocery">Add Grocery</button>
-<button class="btn btn-outline-danger mb-2" @onclick="RemoveGrocery">Remove Grocery</button>
+@*<input class="form-control mb-2" placeholder="Grocery Name" @bind="@groceryName" />
+    <input class="form-control mb-2" placeholder="Grocery Price" @bind="groceryPrice" />
+    <button class="btn btn-outline-primary mb-2" @onclick="AddGrocery">Add Grocery</button>
+    <button class="btn btn-outline-danger mb-2" @onclick="RemoveGrocery">Remove Grocery</button>*@
+
+<EditForm Model="grocery" OnSubmit="AddGrocery" class="w-100">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>Name:</label>
+        <InputText @bind-Value="grocery.Name" class="form-control" />
+    </p>
+    <p>
+        <label>Price:</label>
+        <InputNumber @bind-Value="grocery.Price" class="form-control" />
+    </p>
+    <button class="btn btn-outline-primary" type="submit">Add Grocery</button>
+</EditForm>
+
 <hr />
 <table class="table table-sm">
 
@@ -16,9 +32,10 @@
         <th>Price</th>
         <th></th>
     </tr>
+
     @foreach (var grocery in Groceries)
     {
-        <Item GroceryItem="@grocery" OnGroceryPriceIncreased="@OnGroceryPriceIncreased"/>
+        <Item GroceryItem="@grocery" OnGroceryPriceIncreased="@OnGroceryPriceIncreased" />
         @*<li>@grocery.Name --- @grocery.Price</li>*@
     }
 
@@ -32,21 +49,23 @@
     private string title = "Our Groceries";
     private string groceryName = string.Empty;
     private float groceryPrice = 0;
-
+    private Grocery grocery = new();
     private List<Grocery> Groceries = new List<Grocery>();
     public void AddGrocery()
     {
-        if (!string.IsNullOrWhiteSpace(groceryName) && groceryPrice > 0)
-        {
-            Groceries.Add(new Grocery
-                {
-                    Name = groceryName,
-                    Price = groceryPrice
-                });
-            sum += groceryPrice;
-            groceryName = string.Empty;
-            groceryPrice = 0;
-        }
+        Groceries.Add(grocery);
+        grocery = new();
+        //if (!string.IsNullOrWhiteSpace(groceryName) && groceryPrice > 0)
+        //{
+        //    Groceries.Add(new Grocery
+        //        {
+        //            Name = groceryName,
+        //            Price = groceryPrice
+        //        });
+        //    sum += groceryPrice;
+        //    groceryName = string.Empty;
+        //    groceryPrice = 0;
+        //}
         UpdateTotalAmount();
     }
 
