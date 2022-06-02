@@ -6,17 +6,29 @@
 
 <input class="form-control mb-2" placeholder="Grocery Name" @bind="@groceryName" />
 <input class="form-control mb-2" placeholder="Grocery Price" @bind="groceryPrice" />
-<button class="btn btn-outline-primary mb-2" onclick="@AddGrocery">Add Grocery</button>
+<button class="btn btn-outline-primary mb-2" @onclick="AddGrocery">Add Grocery</button>
+<button class="btn btn-outline-danger mb-2" @onclick="RemoveGrocery">Remove Grocery</button>
 <hr />
-<ul>
+<table class="table table-sm">
+
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th></th>
+    </tr>
     @foreach (var grocery in Groceries)
     {
-        <li>@grocery.Name --- @grocery.Price</li>
+        <Item GroceryItem="@grocery" OnGroceryPriceIncreased="@OnGroceryPriceIncreased"/>
+        @*<li>@grocery.Name --- @grocery.Price</li>*@
     }
-</ul>
-<h1>Total (@Groceries.Sum(c=>c.Price))</h1>
+
+</table>
+
+@*<h1>Total (@Groceries.Sum(c=>c.Price))</h1>*@
+<h1>Total (@sum)</h1>
 
 @code {
+    private float sum = 0;
     private string title = "Our Groceries";
     private string groceryName = string.Empty;
     private float groceryPrice = 0;
@@ -31,8 +43,33 @@
                     Name = groceryName,
                     Price = groceryPrice
                 });
+            sum += groceryPrice;
+            groceryName = string.Empty;
+            groceryPrice = 0;
         }
+        UpdateTotalAmount();
+    }
+
+    public void RemoveGrocery()
+    {
+        var groceryItem = Groceries.Where(c => c.Name == groceryName).FirstOrDefault();
+        if (groceryItem != null)
+        {
+            Groceries.Remove(groceryItem);
+        }
+        sum -= groceryItem.Price;
         groceryName = string.Empty;
         groceryPrice = 0;
+        UpdateTotalAmount();
+    }
+
+    public void UpdateTotalAmount()
+    {
+        sum = Groceries.Sum(x => x.Price);
+    }
+
+    public void OnGroceryPriceIncreased()
+    {
+        UpdateTotalAmount();
     }
 }
